@@ -21,11 +21,7 @@ namespace AppCatalogo
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            ArticuloServicio servicio = new ArticuloServicio();
-            dgvArticulos.DataSource = servicio.Listar();
-
-            // Oculto la columna de URL porque no es necesaria en la grilla
-            dgvArticulos.Columns["ImagenUrl"].Visible = false;
+           cargar();
         }
 
         private void dgvArticulos_SelectionChanged(object sender, EventArgs e)
@@ -60,8 +56,7 @@ namespace AppCatalogo
             alta.ShowDialog();
 
             // Refrescamos el listado después de cerrar el form
-            ArticuloServicio servicio = new ArticuloServicio();
-            dgvArticulos.DataSource = servicio.Listar();
+            cargar();
         }
 
         private void btnEliminar_Click(object sender, EventArgs e)
@@ -76,10 +71,31 @@ namespace AppCatalogo
                     ArticuloServicio servicio = new ArticuloServicio();
                     servicio.Eliminar(seleccionado.Id);
                     // Refrescamos el listado después de eliminar
-                    dgvArticulos.DataSource = servicio.Listar();
+                    cargar();
                 }
             }
         }
 
+        private void btnModificar_Click(object sender, EventArgs e)
+        {
+            if (dgvArticulos.CurrentRow != null)// verifico que haya un artículo seleccionado
+            {
+                Articulo seleccionado = (Articulo)dgvArticulos.CurrentRow.DataBoundItem;
+                frmAltaArticulo modificar = new frmAltaArticulo(seleccionado);
+                modificar.ShowDialog();
+
+                // Refrescar la grilla
+                cargar();
+            }
+        }
+
+        private void cargar()// Método para recargar la grilla de artículos
+        {
+            ArticuloServicio servicio = new ArticuloServicio();
+            dgvArticulos.DataSource = servicio.Listar();
+
+            // Oculto la columna de URL porque no es necesaria en la grilla
+            dgvArticulos.Columns["ImagenUrl"].Visible = false;
+        }
     }
 }

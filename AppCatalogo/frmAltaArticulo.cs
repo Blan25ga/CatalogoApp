@@ -10,10 +10,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+
 namespace AppCatalogo
 {
+    
+
     public partial class frmAltaArticulo : Form
     {
+        public Articulo articulo = null;
         public frmAltaArticulo()
         {
             InitializeComponent();
@@ -34,31 +38,42 @@ namespace AppCatalogo
                     MessageBox.Show("El precio debe ser un número válido.");
                     return;
                 }
-                //la descripcion debe ser menos o igual a 100 caracteres
+
                 if (txtDescripcion.Text.Length > 100)
                 {
                     MessageBox.Show("La descripción debe tener como máximo 100 caracteres.");
                     return;
                 }
 
-                Articulo nuevo = new Articulo();
-                nuevo.Codigo = txtCodigo.Text;
-                nuevo.Nombre = txtNombre.Text;
-                nuevo.Descripcion = txtDescripcion.Text;
-                nuevo.Precio = precio;
-                nuevo.ImagenUrl = txtImagenUrl.Text;
-                nuevo.Marca = (Marca)cboMarca.SelectedItem;
-                nuevo.Categoria = (Categoria)cboCategoria.SelectedItem;
-
                 ArticuloServicio servicio = new ArticuloServicio();
-                servicio.Agregar(nuevo);
 
-                MessageBox.Show("Artículo agregado exitosamente");
+                if (articulo == null)
+                    articulo = new Articulo(); // Alta
+
+                articulo.Codigo = txtCodigo.Text;
+                articulo.Nombre = txtNombre.Text;
+                articulo.Descripcion = txtDescripcion.Text;
+                articulo.Precio = precio;
+                articulo.ImagenUrl = txtImagenUrl.Text;
+                articulo.Marca = (Marca)cboMarca.SelectedItem;
+                articulo.Categoria = (Categoria)cboCategoria.SelectedItem;
+
+                if (articulo.Id != 0)
+                {
+                    servicio.Modificar(articulo);
+                    MessageBox.Show("Artículo modificado exitosamente");
+                }
+                else
+                {
+                    servicio.Agregar(articulo);
+                    MessageBox.Show("Artículo agregado exitosamente");
+                }
+
                 Close();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al agregar el artículo: " + ex.Message);
+                MessageBox.Show("Error al guardar el artículo: " + ex.Message);
             }
         }
 
@@ -86,12 +101,32 @@ namespace AppCatalogo
                 cboCategoria.DataSource = categoriaServicio.Listar();
                 cboCategoria.DisplayMember = "Descripcion";
                 cboCategoria.ValueMember = "Id";
+
+                // Si estamos modificando, rellenar los campos
+                if (articulo != null)
+                {
+                    txtCodigo.Text = articulo.Codigo;
+                    txtNombre.Text = articulo.Nombre;
+                    txtDescripcion.Text = articulo.Descripcion;
+                    txtPrecio.Text = articulo.Precio.ToString();
+                    txtImagenUrl.Text = articulo.ImagenUrl;
+                    cboMarca.SelectedValue = articulo.Marca.Id;
+                    cboCategoria.SelectedValue = articulo.Categoria.Id;
+                }
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error al cargar combos: " + ex.Message);
             }
         }
+
+        internal frmAltaArticulo(Articulo articulo)
+        {
+            InitializeComponent();
+            this.articulo = articulo;
+            Text = "Modificar Artículo";
+        }
+
 
         private void txtImagenUrl_Leave(object sender, EventArgs e)
         {

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AppCatalogo.Clases
 {
-    internal class Articulo
+    public class Articulo
     {
         // Identificador único en la DB
         public int Id { get; set; }

@@ -115,5 +115,32 @@ namespace AppCatalogo.Servicios
 
         }
 
+        public void Modificar(Articulo articulo)
+        {
+            try
+            {
+                using (SqlConnection conexion = new SqlConnection("server=localhost\\SQLEXPRESS; database=CATALOGO_DB; integrated security=true"))
+                {
+                    conexion.Open();
+                    SqlCommand comando = new SqlCommand(
+                        "UPDATE ARTICULOS SET Codigo=@Codigo, Nombre=@Nombre, Descripcion=@Descripcion, " +
+                        "IdMarca=@IdMarca, IdCategoria=@IdCategoria, ImagenUrl=@ImagenUrl, Precio=@Precio " +
+                        "WHERE Id=@Id", conexion);
+                    comando.Parameters.AddWithValue("@Codigo", articulo.Codigo);
+                    comando.Parameters.AddWithValue("@Nombre", articulo.Nombre);
+                    comando.Parameters.AddWithValue("@Descripcion", articulo.Descripcion);
+                    comando.Parameters.AddWithValue("@IdMarca", articulo.Marca.Id);
+                    comando.Parameters.AddWithValue("@IdCategoria", articulo.Categoria.Id);
+                    comando.Parameters.AddWithValue("@ImagenUrl", articulo.ImagenUrl);
+                    comando.Parameters.AddWithValue("@Precio", articulo.Precio);
+                    comando.Parameters.AddWithValue("@Id", articulo.Id);
+                    comando.ExecuteNonQuery();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

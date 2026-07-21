@@ -1,6 +1,10 @@
-﻿namespace AppCatalogo
+﻿using System;
+using System.Windows.Forms;
+
+
+namespace AppCatalogo
 {
-    partial class frmAltaArticulo
+    public partial class frmAltaArticulo : Form
     {
         /// <summary>
         /// Required designer variable.
