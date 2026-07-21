@@ -67,6 +67,7 @@ namespace AppCatalogo.Servicios
             return lista;
         }
 
+
         public void Agregar(Articulo nuevo)
         {
             try
@@ -113,5 +114,6 @@ namespace AppCatalogo.Servicios
             }
 
         }
+
     }
 }

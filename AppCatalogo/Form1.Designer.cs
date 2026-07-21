@@ -30,8 +30,11 @@
         {
             this.dgvArticulos = new System.Windows.Forms.DataGridView();
             this.pbxArticulo = new System.Windows.Forms.PictureBox();
+<<<<<<< HEAD
             this.btnAgregar = new System.Windows.Forms.Button();
             this.btnEliminar = new System.Windows.Forms.Button();
+=======
+>>>>>>> 3ec852693a23e28bac1e8aa326c0020ffd1aa0f5
             ((System.ComponentModel.ISupportInitialize)(this.dgvArticulos)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbxArticulo)).BeginInit();
             this.SuspendLayout();
@@ -39,21 +42,34 @@
             // dgvArticulos
             // 
             this.dgvArticulos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+<<<<<<< HEAD
             this.dgvArticulos.Location = new System.Drawing.Point(12, 22);
             this.dgvArticulos.Name = "dgvArticulos";
             this.dgvArticulos.Size = new System.Drawing.Size(735, 295);
+=======
+            this.dgvArticulos.Location = new System.Drawing.Point(29, 22);
+            this.dgvArticulos.Name = "dgvArticulos";
+            this.dgvArticulos.Size = new System.Drawing.Size(515, 247);
+>>>>>>> 3ec852693a23e28bac1e8aa326c0020ffd1aa0f5
             this.dgvArticulos.TabIndex = 0;
             this.dgvArticulos.SelectionChanged += new System.EventHandler(this.dgvArticulos_SelectionChanged);
             // 
             // pbxArticulo
             // 
+<<<<<<< HEAD
             this.pbxArticulo.Location = new System.Drawing.Point(784, 22);
             this.pbxArticulo.Name = "pbxArticulo";
             this.pbxArticulo.Size = new System.Drawing.Size(240, 295);
+=======
+            this.pbxArticulo.Location = new System.Drawing.Point(567, 22);
+            this.pbxArticulo.Name = "pbxArticulo";
+            this.pbxArticulo.Size = new System.Drawing.Size(224, 247);
+>>>>>>> 3ec852693a23e28bac1e8aa326c0020ffd1aa0f5
             this.pbxArticulo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.pbxArticulo.TabIndex = 1;
             this.pbxArticulo.TabStop = false;
             // 
+<<<<<<< HEAD
             // btnAgregar
             // 
             this.btnAgregar.Location = new System.Drawing.Point(29, 348);
@@ -74,13 +90,19 @@
             this.btnEliminar.UseVisualStyleBackColor = true;
             this.btnEliminar.Click += new System.EventHandler(this.btnEliminar_Click);
             // 
+=======
+>>>>>>> 3ec852693a23e28bac1e8aa326c0020ffd1aa0f5
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+<<<<<<< HEAD
             this.ClientSize = new System.Drawing.Size(1036, 495);
             this.Controls.Add(this.btnEliminar);
             this.Controls.Add(this.btnAgregar);
+=======
+            this.ClientSize = new System.Drawing.Size(821, 495);
+>>>>>>> 3ec852693a23e28bac1e8aa326c0020ffd1aa0f5
             this.Controls.Add(this.pbxArticulo);
             this.Controls.Add(this.dgvArticulos);
             this.Name = "Form1";
@@ -96,8 +118,11 @@
 
         private System.Windows.Forms.DataGridView dgvArticulos;
         private System.Windows.Forms.PictureBox pbxArticulo;
+<<<<<<< HEAD
         private System.Windows.Forms.Button btnAgregar;
         private System.Windows.Forms.Button btnEliminar;
+=======
+>>>>>>> 3ec852693a23e28bac1e8aa326c0020ffd1aa0f5
     }
 }
 

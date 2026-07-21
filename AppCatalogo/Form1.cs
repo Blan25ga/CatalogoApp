@@ -53,6 +53,7 @@ namespace AppCatalogo
             }
         }
 
+
         private void btnAgregar_Click(object sender, EventArgs e)
         {
             frmAltaArticulo alta = new frmAltaArticulo();
@@ -79,5 +80,6 @@ namespace AppCatalogo
                 }
             }
         }
+
     }
 }
