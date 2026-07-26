@@ -18,13 +18,14 @@ namespace AppCatalogo.Servicios
             // 2. Defino la conexión a la base de datos
             SqlConnection conexion = new SqlConnection("server=localhost\\SQLEXPRESS; database=CATALOGO_DB; integrated security=true");
 
-
             // 3. Armo el comando SQL que trae los datos
             SqlCommand comando = new SqlCommand(
-                "SELECT A.Id, Codigo, Nombre, A.Descripcion, ImagenUrl, Precio, " +
-                "M.Descripcion Marca, C.Descripcion Categoria, A.IdMarca, A.IdCategoria " +
-                "FROM ARTICULOS A, MARCAS M, CATEGORIAS C " +
-                "WHERE A.IdMarca = M.Id AND A.IdCategoria = C.Id", conexion);
+                "SELECT A.Id, A.Codigo, A.Nombre, A.Descripcion, A.ImagenUrl, A.Precio, " +
+                "M.Descripcion AS Marca, C.Descripcion AS Categoria, A.IdMarca, A.IdCategoria " +
+                "FROM ARTICULOS A " +
+                "INNER JOIN MARCAS M ON A.IdMarca = M.Id " +
+                "INNER JOIN CATEGORIAS C ON A.IdCategoria = C.Id", conexion);
+
 
             // 4. Abro la conexión
             conexion.Open();
