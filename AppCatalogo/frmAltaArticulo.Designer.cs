@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace AppCatalogo
 {
-    public partial class frmAltaArticulo : Form
+    public partial class frmAltaArticulo : System.Windows.Forms.Form
     {
         /// <summary>
         /// Required designer variable.
@@ -152,6 +152,7 @@ namespace AppCatalogo
             this.txtImagenUrl.Name = "txtImagenUrl";
             this.txtImagenUrl.Size = new System.Drawing.Size(170, 20);
             this.txtImagenUrl.TabIndex = 10;
+            this.txtImagenUrl.TextChanged += new System.EventHandler(this.txtImagenUrl_TextChanged);
             this.txtImagenUrl.Leave += new System.EventHandler(this.txtImagenUrl_Leave);
             // 
             // cboMarca

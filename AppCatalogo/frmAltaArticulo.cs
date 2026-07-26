@@ -15,7 +15,7 @@ namespace AppCatalogo
 {
     
 
-    public partial class frmAltaArticulo : Form
+    public partial class frmAltaArticulo : System.Windows.Forms.Form
     {
         public Articulo articulo = null;
         public frmAltaArticulo()
@@ -128,19 +128,50 @@ namespace AppCatalogo
         }
 
 
-        private void txtImagenUrl_Leave(object sender, EventArgs e)
+        // Evento para cargar la imagen en tiempo real
+        private void txtImagenUrl_TextChanged(object sender, EventArgs e)
         {
-            try
+            //El Uri.TryCreate() método intenta crear un objeto Uri a partir de la cadena proporcionada. Devuelve true si la cadena es una URL válida y false si no lo es.
+            if (Uri.TryCreate(txtImagenUrl.Text, UriKind.Absolute, out Uri uriResult))
             {
-                pbxImagen.Load(txtImagenUrl.Text);
+                try
+                {
+                    pbxImagen.LoadAsync(uriResult.ToString());
+                }
+                catch
+                {
+                    pbxImagen.Load("https://via.placeholder.com/150");
+                }
             }
-            catch
+            else
             {
-                pbxImagen.Image = null;
+                pbxImagen.Load("https://via.placeholder.com/150");
             }
-           
         }
 
+        // Evento para validar la imagen al salir del campo
+        private void txtImagenUrl_Leave(object sender, EventArgs e)
+        {
+            //
+            if (Uri.TryCreate(txtImagenUrl.Text, UriKind.Absolute, out Uri uriResult))
+            {
+                try
+                {
+                    pbxImagen.LoadAsync(uriResult.ToString());
+                }
+                catch
+                {
+                    pbxImagen.Load("https://via.placeholder.com/150");
+                }
+            }
+            else
+            {
+                pbxImagen.Load("https://via.placeholder.com/150");
+            }
+        }
+
+
+        // Evento para validar que solo se ingresen números y coma en el campo de precio
         private void txtPrecio_KeyPress(object sender, KeyPressEventArgs e)
         {
             // Permitir solo números, coma y control (backspace)
@@ -149,5 +180,6 @@ namespace AppCatalogo
                 e.Handled = true;
             }
         }
+
     }
 }
