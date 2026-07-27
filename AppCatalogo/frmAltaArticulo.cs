@@ -6,9 +6,11 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+
 
 
 namespace AppCatalogo
@@ -27,53 +29,99 @@ namespace AppCatalogo
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(txtCodigo.Text) || string.IsNullOrWhiteSpace(txtNombre.Text))
+                // 1. Validar campos obligatorios de texto
+                if (string.IsNullOrWhiteSpace(txtCodigo.Text))
                 {
-                    MessageBox.Show("Debe completar Código y Nombre.");
+                    MessageBox.Show("Debe ingresar el Código de artículo.", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
+                if (string.IsNullOrWhiteSpace(txtNombre.Text))
+                {
+                    MessageBox.Show("Debe ingresar el Nombre.", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                if (string.IsNullOrWhiteSpace(txtDescripcion.Text))
+                {
+                    MessageBox.Show("Debe ingresar la Descripción.", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                if (txtDescripcion.Text.Trim().Length < 10)
+                {
+                    MessageBox.Show("La descripción debe tener como mínimo 10 caracteres.", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // 2. Validar Precio (Numérico y no negativo)
                 if (!decimal.TryParse(txtPrecio.Text, out decimal precio))
                 {
-                    MessageBox.Show("El precio debe ser un número válido.");
+                    MessageBox.Show("El precio debe ser un número válido.", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
-                if (txtDescripcion.Text.Length > 100)
+                if (precio <= 0)
                 {
-                    MessageBox.Show("La descripción debe tener como máximo 100 caracteres.");
+                    MessageBox.Show("El precio debe ser un valor mayor a cero.", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
+                // 3. Validar ComboBoxes
+                if (cboMarca.SelectedItem == null)
+                {
+                    MessageBox.Show("Debe seleccionar una Marca.", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                if (cboCategoria.SelectedItem == null)
+                {
+                    MessageBox.Show("Debe seleccionar una Categoría.", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // 4. Validar formato de URL de Imagen (Opcional o con fallback)
+                string urlImagen = txtImagenUrl.Text.Trim();
+                bool esUrlValida = Uri.TryCreate(urlImagen, UriKind.Absolute, out Uri uriResult)
+                                   && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+
+                if (!esUrlValida && !string.IsNullOrWhiteSpace(urlImagen))
+                {
+                    MessageBox.Show("La URL de la imagen no es válida. Se asignará una imagen por defecto.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    urlImagen = "https://via.placeholder.com/150";
+                }
+
+                // 5. Instanciar y mapear objeto
                 ArticuloServicio servicio = new ArticuloServicio();
 
                 if (articulo == null)
-                    articulo = new Articulo(); // Alta
+                    articulo = new Articulo(); // Es un Alta
 
-                articulo.Codigo = txtCodigo.Text;
-                articulo.Nombre = txtNombre.Text;
-                articulo.Descripcion = txtDescripcion.Text;
+                articulo.Codigo = txtCodigo.Text.Trim();
+                articulo.Nombre = txtNombre.Text.Trim();
+                articulo.Descripcion = txtDescripcion.Text.Trim();
                 articulo.Precio = precio;
-                articulo.ImagenUrl = txtImagenUrl.Text;
+                articulo.ImagenUrl = urlImagen;
                 articulo.Marca = (Marca)cboMarca.SelectedItem;
                 articulo.Categoria = (Categoria)cboCategoria.SelectedItem;
 
+                // 6. Guardar en Base de Datos
                 if (articulo.Id != 0)
                 {
                     servicio.Modificar(articulo);
-                    MessageBox.Show("Artículo modificado exitosamente");
+                    MessageBox.Show("Artículo modificado exitosamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
                 {
                     servicio.Agregar(articulo);
-                    MessageBox.Show("Artículo agregado exitosamente");
+                    MessageBox.Show("Artículo agregado exitosamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
 
                 Close();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al guardar el artículo: " + ex.Message);
+                MessageBox.Show("Error al guardar el artículo: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -127,33 +175,58 @@ namespace AppCatalogo
             Text = "Modificar Artículo";
         }
 
-
-        // Evento para cargar la imagen en tiempo real
-        private void txtImagenUrl_TextChanged(object sender, EventArgs e)
+        // Evento para validar la imagen al salir del campo
+        private async void txtImagenUrl_Leave(object sender, EventArgs e)
         {
-            //El Uri.TryCreate() método intenta crear un objeto Uri a partir de la cadena proporcionada. Devuelve true si la cadena es una URL válida y false si no lo es.
-            if (Uri.TryCreate(txtImagenUrl.Text, UriKind.Absolute, out Uri uriResult))
+            string url = txtImagenUrl.Text.Trim(); // Obtenemos la URL ingresada por el usuario
+
+            // Si el campo está vacío, asignamos la imagen por defecto sin mostrar alertas
+            if (string.IsNullOrWhiteSpace(url))
+            {
+                cargarImagenPorDefecto();
+                return;
+            }
+
+            // Validamos que sea una URL con formato válido (http o https)
+            bool esUrlValida = Uri.TryCreate(url, UriKind.Absolute, out Uri uriResult)
+                               && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+
+            if (esUrlValida)
             {
                 try
                 {
-                    pbxImagen.LoadAsync(uriResult.ToString());
+                    // Usamos Load síncrono envuelto en try-catch para capturar si la URL no existe (404)
+                    pbxImagen.Load(url);
                 }
                 catch
                 {
-                    pbxImagen.Load("https://via.placeholder.com/150");
+                    // Si la URL no se pudo cargar o no es una imagen válida, mostramos placeholder sin alertar al usuario
+                    cargarImagenPorDefecto();
                 }
             }
             else
             {
-                pbxImagen.Load("https://via.placeholder.com/150");
+                // Si no es una URL válida, simplemente ponemos el placeholder
+                cargarImagenPorDefecto();
             }
         }
 
-        // Evento para validar la imagen al salir del campo
-        private void txtImagenUrl_Leave(object sender, EventArgs e)
+        // Método auxiliar para evitar repetir la URL del placeholder
+        private void cargarImagenPorDefecto()
         {
-            //
-            if (Uri.TryCreate(txtImagenUrl.Text, UriKind.Absolute, out Uri uriResult))
+            try
+            {
+                pbxImagen.Load("https://via.placeholder.com/150");
+            }
+            catch
+            {
+                // Si no hay internet, desvinculamos la imagen para evitar crashes
+                pbxImagen.Image = null;
+            }
+
+            // Caso 2: validar formato de URL
+            if (Uri.TryCreate(txtImagenUrl.Text, UriKind.Absolute, out Uri uriResult)
+                && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps))
             {
                 try
                 {
@@ -161,13 +234,17 @@ namespace AppCatalogo
                 }
                 catch
                 {
+                    MessageBox.Show("Error al cargar la imagen.");
                     pbxImagen.Load("https://via.placeholder.com/150");
+                    
                 }
             }
             else
             {
-                pbxImagen.Load("https://via.placeholder.com/150");
+                MessageBox.Show("Debe ingresar una dirección de imagen válida.");
+                
             }
+
         }
 
 

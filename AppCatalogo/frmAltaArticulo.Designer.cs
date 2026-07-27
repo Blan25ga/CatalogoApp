@@ -54,22 +54,28 @@ namespace AppCatalogo
             // 
             // btnAceptar
             // 
-            this.btnAceptar.Location = new System.Drawing.Point(53, 346);
+            this.btnAceptar.BackColor = System.Drawing.Color.LimeGreen;
+            this.btnAceptar.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnAceptar.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnAceptar.Location = new System.Drawing.Point(53, 330);
             this.btnAceptar.Name = "btnAceptar";
-            this.btnAceptar.Size = new System.Drawing.Size(75, 23);
+            this.btnAceptar.Size = new System.Drawing.Size(75, 53);
             this.btnAceptar.TabIndex = 0;
             this.btnAceptar.Text = "Aceptar";
-            this.btnAceptar.UseVisualStyleBackColor = true;
+            this.btnAceptar.UseVisualStyleBackColor = false;
             this.btnAceptar.Click += new System.EventHandler(this.btnAceptar_Click);
             // 
             // btnCancelar
             // 
-            this.btnCancelar.Location = new System.Drawing.Point(278, 346);
+            this.btnCancelar.BackColor = System.Drawing.Color.DarkGray;
+            this.btnCancelar.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnCancelar.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnCancelar.Location = new System.Drawing.Point(278, 330);
             this.btnCancelar.Name = "btnCancelar";
-            this.btnCancelar.Size = new System.Drawing.Size(75, 23);
+            this.btnCancelar.Size = new System.Drawing.Size(75, 53);
             this.btnCancelar.TabIndex = 1;
             this.btnCancelar.Text = "Cancelar";
-            this.btnCancelar.UseVisualStyleBackColor = true;
+            this.btnCancelar.UseVisualStyleBackColor = false;
             this.btnCancelar.Click += new System.EventHandler(this.btnCancelar_Click);
             // 
             // txtCodigo
@@ -152,7 +158,6 @@ namespace AppCatalogo
             this.txtImagenUrl.Name = "txtImagenUrl";
             this.txtImagenUrl.Size = new System.Drawing.Size(170, 20);
             this.txtImagenUrl.TabIndex = 10;
-            this.txtImagenUrl.TextChanged += new System.EventHandler(this.txtImagenUrl_TextChanged);
             this.txtImagenUrl.Leave += new System.EventHandler(this.txtImagenUrl_Leave);
             // 
             // cboMarca
@@ -191,9 +196,10 @@ namespace AppCatalogo
             // 
             // pbxImagen
             // 
-            this.pbxImagen.Location = new System.Drawing.Point(414, 40);
+            this.pbxImagen.Location = new System.Drawing.Point(387, 37);
             this.pbxImagen.Name = "pbxImagen";
-            this.pbxImagen.Size = new System.Drawing.Size(201, 251);
+            this.pbxImagen.Size = new System.Drawing.Size(201, 254);
+            this.pbxImagen.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbxImagen.TabIndex = 16;
             this.pbxImagen.TabStop = false;
             // 
@@ -201,7 +207,7 @@ namespace AppCatalogo
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(691, 412);
+            this.ClientSize = new System.Drawing.Size(620, 412);
             this.Controls.Add(this.pbxImagen);
             this.Controls.Add(this.lblCategoria);
             this.Controls.Add(this.lblMarca);
